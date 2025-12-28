@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
+import dj_database_url
 
 load_dotenv()
 
@@ -25,14 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-*!i95#qyp)vxm)g0d6!p&*qqi_7yz%v%sh6_ujw$bo+3$t$%7p"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG") == "True"
 
-ALLOWED_HOSTS = [".labs.play-with-docker.com",
-                 "localhost",
-                 "127.0.0.1"]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 
 # Application definition
@@ -44,7 +43,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     # Third partu apps
     "rest_framework",
     "rest_framework.authtoken",
@@ -52,17 +50,18 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "django_ckeditor_5",
-
+    "cloudinary",
+    "cloudinary_storage",
     # Newshub Apps
     "users",
     "publications",
     "articles",
     "subscriptions",
-
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -110,18 +109,22 @@ TWITTER_API_SECRET = os.getenv("TWITTER_API_SECRET")
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME', 'newshub_db'),
-        'USER': os.getenv('DB_USER', 'newshub_user'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'newshub_pass'),
-        'HOST': os.getenv('DB_HOST', 'db'),
-        'PORT': os.getenv('DB_PORT', '3306'),
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
-        }
-    }
+    "default": dj_database_url.parse(
+        os.getenv("DATABASE_URL"),
+        conn_max_age=600,
+        ssl_require=True,
+    )
 }
+
+CLOUDINARY_URL = os.getenv("CLOUDINARY_URL")
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://the_newshub.onrender.com",
+]
+
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -150,7 +153,7 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "noreply.thenewshub@gmail.com"
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
@@ -170,10 +173,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = "static/"
-STATICFILES_DIRS = [BASE_DIR / "static"]
-STATIC_ROOT = BASE_DIR / "staticfiles"
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+if not DEBUG:
+    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -204,15 +208,38 @@ SIMPLE_JWT = {
 CKEDITOR_5_CONFIGS = {
     "default": {
         "toolbar": [
-            "heading", "|",
-            "bold", "italic", "underline", "strikethrough", "subscript", "superscript", "|",
-            "link", "blockQuote", "code", "insertTable", "|",
-            "bulletedList", "numberedList", "todoList", "|",
-            "outdent", "indent", "|",
-            "alignment", "|",
-            "imageUpload", "mediaEmbed", "|",
-            "fontColor", "fontBackgroundColor", "removeFormat", "|",
-            "undo", "redo",
+            "heading",
+            "|",
+            "bold",
+            "italic",
+            "underline",
+            "strikethrough",
+            "subscript",
+            "superscript",
+            "|",
+            "link",
+            "blockQuote",
+            "code",
+            "insertTable",
+            "|",
+            "bulletedList",
+            "numberedList",
+            "todoList",
+            "|",
+            "outdent",
+            "indent",
+            "|",
+            "alignment",
+            "|",
+            "imageUpload",
+            "mediaEmbed",
+            "|",
+            "fontColor",
+            "fontBackgroundColor",
+            "removeFormat",
+            "|",
+            "undo",
+            "redo",
         ],
         "image": {
             "toolbar": [
