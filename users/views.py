@@ -20,6 +20,7 @@ from publications.models import Publication
 from articles.models import Article
 from subscriptions.models import Subscription
 from core.mixins import PaginationMixin
+from .utils import send_email_async
 
 
 class SignUpReaderView(CreateView):
@@ -30,6 +31,7 @@ class SignUpReaderView(CreateView):
     - param: CreateView, provides user creation form and logic.
     - return: redirects to home page upon successful registration.
     """
+
     model = User
     form_class = ReaderSignUpForm
     template_name = "users/signup_reader.html"
@@ -44,7 +46,7 @@ class SignUpReaderView(CreateView):
         """
         form = super().get_form(form_class)
         for field in form.fields.values():
-            field.widget.attrs.update({'class': 'form-control'})
+            field.widget.attrs.update({"class": "form-control"})
         return form
 
     def form_valid(self, form):
@@ -69,6 +71,7 @@ class SignUpJournalistView(CreateView):
     - param: CreateView, provides user creation form and logic.
     - return: redirects to home page upon successful registration.
     """
+
     model = User
     form_class = JournalistSignUpForm
     template_name = "users/signup_journalist.html"
@@ -83,7 +86,7 @@ class SignUpJournalistView(CreateView):
         """
         form = super().get_form(form_class)
         for field in form.fields.values():
-            field.widget.attrs.update({'class': 'form-control'})
+            field.widget.attrs.update({"class": "form-control"})
         return form
 
     def form_valid(self, form):
@@ -109,6 +112,7 @@ class SignUpEditorView(CreateView):
     - param: CreateView, provides user creation form and logic.
     - return: redirects to home page upon successful registration.
     """
+
     model = User
     form_class = EditorSignUpForm
     template_name = "users/signup_editor.html"
@@ -123,7 +127,7 @@ class SignUpEditorView(CreateView):
         """
         form = super().get_form(form_class)
         for field in form.fields.values():
-            field.widget.attrs.update({'class': 'form-control'})
+            field.widget.attrs.update({"class": "form-control"})
         return form
 
     def form_valid(self, form):
@@ -147,6 +151,7 @@ class CustomLoginView(LoginView):
     - param: LoginView, provides built-in authentication functionality.
     - return: renders login page and handles authentication.
     """
+
     template_name = "users/login.html"
 
     def get_form(self, form_class=None):
@@ -158,7 +163,7 @@ class CustomLoginView(LoginView):
         """
         form = super().get_form(form_class)
         for field in form.fields.values():
-            field.widget.attrs.update({'class': 'form-control'})
+            field.widget.attrs.update({"class": "form-control"})
         return form
 
 
@@ -169,6 +174,7 @@ class CustomLogoutView(LogoutView):
     - param: LogoutView, provides built-in logout functionality.
     - return: redirects to the home page after logout.
     """
+
     next_page = reverse_lazy("home")
 
     def dispatch(self, request, *args, **kwargs):
@@ -196,6 +202,7 @@ class ProfileView(LoginRequiredMixin, TemplateView, PaginationMixin):
     - param: TemplateView, provides template rendering.
     - return: renders user profile with personalized content.
     """
+
     template_name = "users/profile.html"
     paginate_by = 15
 
@@ -215,12 +222,12 @@ class ProfileView(LoginRequiredMixin, TemplateView, PaginationMixin):
             user.articles.all()
             if user.role == "journalist" and hasattr(user, "articles")
             else Article.objects.none()
-            )
+        )
         context["publications"] = (
             user.edited_publications.all()
             if user.role == "editor"
             else Publication.objects.none()
-            )
+        )
         return context
 
 
@@ -235,6 +242,7 @@ class ReaderDashboardView(LoginRequiredMixin, PaginationMixin, TemplateView):
     - param: TemplateView, provides dashboard rendering.
     - return: renders the reader dashboard page.
     """
+
     template_name = "users/reader_dashboard.html"
     paginate_by = 10
 
@@ -247,32 +255,36 @@ class ReaderDashboardView(LoginRequiredMixin, PaginationMixin, TemplateView):
         - return: dictionary with subscription data and pagination objects.
         """
         context = super().get_context_data(**kwargs)
-        (paginator_pub, page_obj_pub, publication_subs,
-         is_paginated_pub) = self.paginate_queryset(
-             Subscription.objects.filter(subscriber=self.request.user,
-                                         publication__isnull=False
-                                         ).select_related("publication"
-                                                          ), self.paginate_by,
-                                                          )
+        (paginator_pub, page_obj_pub, publication_subs, is_paginated_pub) = (
+            self.paginate_queryset(
+                Subscription.objects.filter(
+                    subscriber=self.request.user, publication__isnull=False
+                ).select_related("publication"),
+                self.paginate_by,
+            )
+        )
 
-        (paginator_jour, page_obj_jour, journalist_subs,
-         is_paginated_jour) = self.paginate_queryset(
-            Subscription.objects.filter(subscriber=self.request.user,
-                                        journalist__isnull=False
-                                        ).select_related("journalist"
-                                                         ), self.paginate_by,
-                                                           )
+        (paginator_jour, page_obj_jour, journalist_subs, is_paginated_jour) = (
+            self.paginate_queryset(
+                Subscription.objects.filter(
+                    subscriber=self.request.user, journalist__isnull=False
+                ).select_related("journalist"),
+                self.paginate_by,
+            )
+        )
 
-        context.update({
-            "publication_subs": publication_subs,
-            "journalist_subs": journalist_subs,
-            "paginator_pub": paginator_pub,
-            "page_obj_pub": page_obj_pub,
-            "is_paginated_pub": is_paginated_pub,
-            "paginator_jour": paginator_jour,
-            "page_obj_jour": page_obj_jour,
-            "is_paginated_jour": is_paginated_jour,
-            })
+        context.update(
+            {
+                "publication_subs": publication_subs,
+                "journalist_subs": journalist_subs,
+                "paginator_pub": paginator_pub,
+                "page_obj_pub": page_obj_pub,
+                "is_paginated_pub": is_paginated_pub,
+                "paginator_jour": paginator_jour,
+                "page_obj_jour": page_obj_jour,
+                "is_paginated_jour": is_paginated_jour,
+            }
+        )
         return context
 
 
@@ -290,10 +302,8 @@ def editor_profile(request, editor_id):
 
     # All publications this editor manages
     publications = (
-        Publication.objects.filter(editors=editor)
-        .distinct()
-        .order_by("name")
-        )
+        Publication.objects.filter(editors=editor).distinct().order_by("name")
+    )
 
     # All articles under those publications
     articles = (
@@ -343,13 +353,13 @@ def journalist_profile(request, journalist_id):
     if request.user.is_authenticated and request.user.role == "reader":
         is_subscribed = journalist.journalist_subscriptions.filter(
             subscriber=request.user
-            ).exists()
+        ).exists()
 
     paginator_mixin = PaginationMixin()
     paginator_mixin.request = request  # manually attach request
-    (paginator, page_obj,
-     articles_page, is_paginated) = paginator_mixin.paginate_queryset(
-         articles, paginator_mixin.paginate_by)
+    (paginator, page_obj, articles_page, is_paginated) = (
+        paginator_mixin.paginate_queryset(articles, paginator_mixin.paginate_by)
+    )
 
     context = {
         "journalist": journalist,
@@ -424,13 +434,15 @@ def request_password_reset(request):
 
             # Send email
             subject = "Password Reset Request"
-            body = (f"Hi {user.full_name},\n\nUse the link below to reset "
-                    f"your password:\n{reset_url}\n\nThis link will expire "
-                    f"in 10 minutes.")
+            body = (
+                f"Hi {user.full_name},\n\nUse the link below to reset "
+                f"your password:\n{reset_url}\n\nThis link will expire "
+                f"in 10 minutes."
+            )
             from_email = getattr(settings, "DEFAULT_FROM_EMAIL")
-            email_msg = EmailMessage(subject, body, from_email,
-                                     [user.email])
-            email_msg.send()
+            email_msg = EmailMessage(subject, body, from_email, [user.email])
+
+            send_email_async(email_msg)
 
         return render(request, "users/reset_requested.html")
 
@@ -465,8 +477,7 @@ def reset_password(request, token):
             reset_token.user.save()
             reset_token.used = True
             reset_token.save()
-            messages.success(request,
-                             "Your password has been reset. Please log in.")
+            messages.success(request, "Your password has been reset. Please log in.")
             return HttpResponseRedirect(reverse("login"))
         else:
             messages.error(request, "Passwords do not match.")

@@ -148,6 +148,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Resend API key
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
+
+
 # Email backend for development (terminal output)
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
