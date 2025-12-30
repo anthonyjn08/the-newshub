@@ -1,8 +1,8 @@
 import threading
-from resend import Resend
+import resend
 from django.conf import settings
 
-resend_client = Resend(api_key=settings.RESEND_API_KEY)
+resend.api_key = settings.RESEND_API_KEY
 
 
 def send_email_async(email_msg):
@@ -11,11 +11,16 @@ def send_email_async(email_msg):
     """
 
     def task():
-        resend_client.emails.send(
-            from_email=email_msg.from_email,
-            to=email_msg.to,
-            subject=email_msg.subject,
-            text=email_msg.body,
-        )
+        try:
+            resend.Emails.send(
+                {
+                    "from": email_msg.from_email,
+                    "to": list(email_msg.to),
+                    "subject": email_msg.subject,
+                    "text": email_msg.body,
+                }
+            )
+        except Exception as e:
+            print(f"Failed to send email: {e}")
 
-    threading.Thread(target=task).start()
+    threading.Thread(target=task, daemon=True).start()
