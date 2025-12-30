@@ -14,7 +14,7 @@ def send_email_async(email_msg):
         try:
             resend.Emails.send(
                 {
-                    "from": email_msg.from_email,
+                    "from": "onboarding@resend.dev",
                     "to": list(email_msg.to),
                     "subject": email_msg.subject,
                     "text": email_msg.body,
