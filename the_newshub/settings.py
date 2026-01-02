@@ -267,7 +267,9 @@ CKEDITOR_5_CONFIGS = {
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-CKEDITOR_5_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+CKEDITOR_5_STORAGE_BACKEND = (
+    "cloudinary_storage.storage.MediaCloudinaryStorage"
+)
 CKEDITOR_UPLOAD_PATH = "articles/"
 CKEDITOR_5_FILE_UPLOAD_PERMISSION = "authenticated"
 CKEDITOR_5_ALLOW_FILE_UPLOADS = True
