@@ -205,6 +205,20 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
+CLOUDINARY_STORAGE = {
+    "RESOURCE_TYPE": "image",
+}
+
+CKEDITOR_5_STORAGE_BACKEND = (
+    "cloudinary_storage.storage.MediaCloudinaryStorage"
+)
+CKEDITOR_5_UPLOAD_PATH = "articles/images/"
+CKEDITOR_5_FILE_UPLOAD_PERMISSION = "authenticated"
+CKEDITOR_5_ALLOW_NONIMAGE_FILES = False
+
+
 CKEDITOR_5_CONFIGS = {
     "default": {
         "toolbar": [
@@ -261,23 +275,12 @@ CKEDITOR_5_CONFIGS = {
         },
         "height": 600,
         "width": "100%",
-        "ckfinder": {"uploadUrl": "/ckeditor_upload/"},
     }
 }
 
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
-
-CKEDITOR_5_STORAGE_BACKEND = (
-    "cloudinary_storage.storage.MediaCloudinaryStorage"
-)
-CKEDITOR_5_UPLOAD_PATH = "articles/images/"
-CKEDITOR_5_FILE_UPLOAD_PERMISSION = "authenticated"
-CKEDITOR_5_ALLOW_FILE_UPLOADS = True
-CKEDITOR_5_ALLOW_NONIMAGE_FILES = False
-
-DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 mimetypes.add_type("image/jpeg", ".jpg", strict=True)
 mimetypes.add_type("image/png", ".png", strict=True)
