@@ -211,9 +211,7 @@ CLOUDINARY_STORAGE = {
     "RESOURCE_TYPE": "image",
 }
 
-CKEDITOR_5_STORAGE_BACKEND = (
-    "cloudinary_storage.storage.MediaCloudinaryStorage"
-)
+CKEDITOR_5_STORAGE_BACKEND = "cloudinary_storage.storage.RawCloudinaryStorage"
 CKEDITOR_5_UPLOAD_PATH = "articles/images/"
 CKEDITOR_5_FILE_UPLOAD_PERMISSION = "authenticated"
 CKEDITOR_5_ALLOW_NONIMAGE_FILES = False
