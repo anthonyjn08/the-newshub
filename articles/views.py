@@ -28,6 +28,7 @@ from core.mixins import PaginationMixin
 import cloudinary.uploader
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import cloudinary.api
 
 
 class HomeView(TemplateView):
@@ -818,7 +819,7 @@ def test_upload(request):
 def check_cloudinary(request):
     try:
         # Try to list your Cloudinary resources as a test
-        resources = cloudinary.uploader.api_resources()
+        resources = cloudinary.api.resources()
         return JsonResponse(
             {
                 "status": "success",
