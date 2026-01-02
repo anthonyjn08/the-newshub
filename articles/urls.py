@@ -16,6 +16,7 @@ from .views import (
     CommentViewSet,
     ckeditor_upload,
     test_upload,
+    check_cloudinary,
 )
 
 router = DefaultRouter()
@@ -55,6 +56,7 @@ urlpatterns = [
     ),
     path("ckeditor_upload/", ckeditor_upload, name="ckeditor_upload"),
     path("test-upload/", test_upload, name="test-upload"),
+    path("check-cloudinary/", check_cloudinary),
 ]
 
 urlpatterns += router.urls

@@ -26,8 +26,9 @@ from publications.models import Publication
 from subscriptions.models import Subscription
 from core.mixins import PaginationMixin
 import cloudinary.uploader
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+import os
 
 
 class HomeView(TemplateView):
@@ -813,3 +814,17 @@ def test_upload(request):
         print("Content type:", f.content_type)
         return JsonResponse({"ok": True})
     return JsonResponse({"error": "No file"}, status=400)
+
+
+def check_cloudinary(request):
+    cloud_url = os.getenv("CLOUDINARY_URL")
+    cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME")
+    api_key = os.getenv("CLOUDINARY_API_KEY")
+    api_secret = os.getenv("CLOUDINARY_API_SECRET")
+
+    return HttpResponse(
+        f"CLOUDINARY_URL={cloud_url}<br>"
+        f"CLOUDINARY_CLOUD_NAME={cloud_name}<br>"
+        f"CLOUDINARY_API_KEY={api_key}<br>"
+        f"CLOUDINARY_API_SECRET={api_secret}"
+    )
