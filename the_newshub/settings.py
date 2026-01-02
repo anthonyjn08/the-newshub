@@ -261,6 +261,7 @@ CKEDITOR_5_CONFIGS = {
         },
         "height": 600,
         "width": "100%",
+        "ckfinder": {"uploadUrl": "/ckeditor_upload/"},
     }
 }
 
