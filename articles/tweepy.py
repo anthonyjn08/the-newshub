@@ -2,7 +2,6 @@ import os
 import tweepy
 from dotenv import load_dotenv
 from django.conf import settings
-from .models import Article
 
 load_dotenv()
 

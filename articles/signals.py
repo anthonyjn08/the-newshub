@@ -1,11 +1,12 @@
 import sys
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.conf import settings
 from .tweepy import tweet_article
 from .models import Article
 from subscriptions.models import Subscription
+from users.utils import send_email_async
 
 
 @receiver(post_save, sender=Article)
@@ -17,7 +18,7 @@ def handle_article_publication(sender, instance, created, **kwargs):
       *after* editor approval.
     """
     # Skip external side effects during tests
-    if 'test' in sys.argv:
+    if "test" in sys.argv:
         return
 
     # Skip unless the article is now published
@@ -25,8 +26,9 @@ def handle_article_publication(sender, instance, created, **kwargs):
         should_notify = True
 
     # Publication articles: become published later after editor approval
-    elif (not created and instance.status == "published"
-          and instance.publication):
+    elif (
+        not created and instance.status == "published" and instance.publication
+    ):
         should_notify = True
 
     else:
@@ -36,6 +38,8 @@ def handle_article_publication(sender, instance, created, **kwargs):
         return
 
     # --- Notifications ---
+
+    article_url = f"{settings.SITE_URL}{instance.get_url()}"
     try:
         tweet_article(instance)
     except Exception as e:
@@ -46,27 +50,31 @@ def handle_article_publication(sender, instance, created, **kwargs):
     else:
         subs = Subscription.objects.filter(journalist=instance.author)
 
-    emails = sorted({
-        s.subscriber.email for s in subs.select_related("subscriber")
-        if s.subscriber.email
-        })
+    emails = sorted(
+        {
+            s.subscriber.email
+            for s in subs.select_related("subscriber")
+            if s.subscriber.email
+        }
+    )
 
     if not emails:
         return
 
     content_type = "newsletter" if instance.type == "newsletter" else "article"
     subject = f"New {content_type.capitalize()}: {instance.title}"
-    message = (
+    body = (
         f"A new {content_type} has just been published on The Newshub!\n\n"
         f"Title: {instance.title}\n"
         f"Author: {instance.author.full_name}\n"
-        f"Read it on The Newshub 📰"
-        )
+        f"Read it on The Newshub 📰 - {article_url}\n"
+    )
 
-    send_mail(
+    email_msg = EmailMessage(
         subject=subject,
-        message=message,
-        from_email=getattr(settings, "DEFAULT_FROM_EMAIL"),
-        recipient_list=emails,
-        fail_silently=False,
-        )
+        body=body,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=emails,
+    )
+
+    send_email_async(email_msg)

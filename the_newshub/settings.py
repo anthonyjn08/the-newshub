@@ -116,8 +116,6 @@ DATABASES = {
     )
 }
 
-CLOUDINARY_URL = os.getenv("CLOUDINARY_URL")
-
 CSRF_TRUSTED_ORIGINS = [
     "https://the_newshub.onrender.com",
 ]
@@ -179,8 +177,6 @@ if not DEBUG:
     STATICFILES_STORAGE = (
         "whitenoise.storage.CompressedManifestStaticFilesStorage"
     )
-
-DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -271,8 +267,19 @@ CKEDITOR_5_CONFIGS = {
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-CKEDITOR_5_UPLOAD_FILE_VIEW_NAME = "ckeditor_upload_file"
+CKEDITOR_5_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 CKEDITOR_UPLOAD_PATH = "articles/"
 CKEDITOR_5_FILE_UPLOAD_PERMISSION = "authenticated"
 CKEDITOR_5_ALLOW_FILE_UPLOADS = True
-CKEDITOR_5_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+CKEDITOR_5_UPLOAD_FILE_VIEW_NAME = "ckeditor_upload_file"
+
+CLOUDINARY_URL = os.getenv("CLOUDINARY_URL")
+
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
+    "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
+    "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
+    "RESOURCE_TYPE": "image",
+}
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
