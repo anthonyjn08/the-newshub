@@ -15,6 +15,7 @@ from .views import (
     JournalistDashboardView,
     CommentViewSet,
     ckeditor_upload,
+    test_upload,
 )
 
 router = DefaultRouter()
@@ -53,6 +54,7 @@ urlpatterns = [
         "<int:pk>/reject/", RejectArticleView.as_view(), name="article_reject"
     ),
     path("ckeditor_upload/", ckeditor_upload, name="ckeditor_upload"),
+    path("test-upload/", test_upload, name="test-upload"),
 ]
 
 urlpatterns += router.urls

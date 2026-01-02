@@ -801,3 +801,15 @@ def ckeditor_upload(request):
         )
         return JsonResponse({"url": result["secure_url"]})
     return JsonResponse({"error": "Invalid request"}, status=400)
+
+
+@csrf_exempt
+def test_upload(request):
+    if request.method == "POST" and request.FILES.get("upload"):
+        f = request.FILES["upload"]
+        # Print some info to the logs
+        print("File name:", f.name)
+        print("File size:", f.size)
+        print("Content type:", f.content_type)
+        return JsonResponse({"ok": True})
+    return JsonResponse({"error": "No file"}, status=400)
