@@ -10,6 +10,7 @@ class ArticleForm(forms.ModelForm):
     """
     Form to create articles.
     """
+
     class Meta:
         model = Article
         fields = ["title", "type", "publication", "content"]
@@ -20,7 +21,25 @@ class ArticleForm(forms.ModelForm):
             ),
         }
         widgets = {
-            "content": CKEditor5Widget(config_name="default"),
+            "content": CKEditor5Widget(
+                config={
+                    "toolbar": [
+                        "heading",
+                        "|",
+                        "bold",
+                        "italic",
+                        "imageUpload",
+                        "undo",
+                        "redo",
+                    ],
+                    "ckfinder": {"uploadUrl": "/ckeditor_upload/"},
+                    "image": {
+                        "toolbar": ["imageTextAlternative", "imageStyle:full"]
+                    },
+                    "height": 600,
+                    "width": "100%",
+                }
+            )
         }
 
     def __init__(self, *args, **kwargs):
@@ -29,22 +48,28 @@ class ArticleForm(forms.ModelForm):
         self.helper.form_tag = False
         self.helper.include_media = False
         self.helper.disable_csrf = True
-        self.helper.add_input(Submit("submit", "Save Article",
-                              css_class="btn btn-primary w-100 mt-3")
-                              )
+        self.helper.add_input(
+            Submit(
+                "submit",
+                "Save Article",
+                css_class="btn btn-primary w-100 mt-3",
+            )
+        )
 
 
 class CommentForm(forms.Form):
     """
     Form to let readers add comments to artcles.
     """
+
     text = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 3}), label="Comment"
-        )
+    )
 
 
 class RatingForm(forms.Form):
     """
     Form to let readers rate articles.
     """
+
     score = forms.IntegerField(min_value=1, max_value=5, label="Rating (1-5)")
