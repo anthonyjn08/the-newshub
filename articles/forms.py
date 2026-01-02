@@ -21,7 +21,7 @@ class ArticleForm(forms.ModelForm):
             ),
         }
         widgets = {
-            "content": CKEditor5Widget(config="default"),
+            "content": CKEditor5Widget(config_name="default"),
         }
 
     def __init__(self, *args, **kwargs):
