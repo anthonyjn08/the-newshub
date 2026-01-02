@@ -15,6 +15,7 @@ from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
 import dj_database_url
+import mimetypes
 
 load_dotenv()
 
@@ -283,3 +284,7 @@ CLOUDINARY_STORAGE = {
 }
 
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
+mimetypes.add_type("image/jpeg", ".jpg", strict=True)
+mimetypes.add_type("image/png", ".png", strict=True)
+mimetypes.add_type("image/webp", ".webp", strict=True)
