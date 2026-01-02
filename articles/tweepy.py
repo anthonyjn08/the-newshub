@@ -1,6 +1,8 @@
 import os
 import tweepy
 from dotenv import load_dotenv
+from django.conf import settings
+from .models import Article
 
 load_dotenv()
 
@@ -39,8 +41,12 @@ def tweet_article(article):
     if not client:
         return
 
-    tweet_text = (f"{article.title} by {article.author.full_name}"
-                  f"\nRead more on The Newshub 📰")
+    article_url = f"{settings.SITE_URL}{article.get_url()}"
+
+    tweet_text = (
+        f"{article.title} by {article.author.full_name}"
+        f"\nRead more on The Newshub 📰 - {article_url}"
+    )
 
     try:
         response = client.create_tweet(text=tweet_text)

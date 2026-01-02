@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.utils.text import slugify
 from django.utils import timezone
+from django.urls import reverse
 from django_ckeditor_5.fields import CKEditor5Field
 
 User = settings.AUTH_USER_MODEL
@@ -32,40 +33,51 @@ class Article(models.Model):
         - updated_at: DateTimeField, when the article was modified.
         - published_at: DateTimeField, when the article was published.
     """
+
     STATUS_CHOICES = [
         ("draft", "Draft"),
         ("pending_approval", "Pending Approval"),
         ("published", "Published"),
         ("rejected", "Rejected"),
-        ]
+    ]
 
     TYPE_CHOICES = [
         ("article", "Article"),
         ("newsletter", "Newsletter"),
-        ]
+    ]
 
     title = models.CharField(max_length=300)
     slug = models.SlugField(unique=True, blank=True)
     author = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, related_name="articles"
-        )
+    )
     publication = models.ForeignKey(
-        "publications.Publication", on_delete=models.CASCADE,
-        related_name="articles", null=True, blank=True,
-        )
+        "publications.Publication",
+        on_delete=models.CASCADE,
+        related_name="articles",
+        null=True,
+        blank=True,
+    )
     type = models.CharField(
-        max_length=20, choices=TYPE_CHOICES, default="article",
-        help_text=("Choose 'Article' for multi-block content, "
-                   "or 'Newsletter' for simple text content.")
-        )
+        max_length=20,
+        choices=TYPE_CHOICES,
+        default="article",
+        help_text=(
+            "Choose 'Article' for multi-block content, "
+            "or 'Newsletter' for simple text content."
+        ),
+    )
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default="draft"
-        )
+    )
     content = CKEditor5Field("Content", config_name="default", blank=True)
     feedback = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     published_at = models.DateTimeField(null=True, blank=True)
+
+    def get_url(self):
+        return reverse("article_detail", args=[self.slug])
 
     def save(self, *args, **kwargs):
         """
@@ -105,7 +117,7 @@ class Article(models.Model):
         return (
             f"{self.title} ({self.get_type_display()} - "
             f"{self.get_status_display()})"
-            )
+        )
 
 
 class Comment(models.Model):
@@ -118,9 +130,10 @@ class Comment(models.Model):
         - text: TextField, the comment text.
         - created_at: DateTimeField, the date when the comment was created.
     """
+
     article = models.ForeignKey(
         Article, related_name="comments", on_delete=models.CASCADE
-        )
+    )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -141,9 +154,10 @@ class Rating(models.Model):
         - user: ForiegnKey, user who gave the rating.
         - score: PositiveIntegerField, the out of 5 score.
     """
+
     article = models.ForeignKey(
         Article, related_name="ratings", on_delete=models.CASCADE
-        )
+    )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     score = models.PositiveSmallIntegerField()
 
