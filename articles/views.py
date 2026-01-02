@@ -28,7 +28,6 @@ from core.mixins import PaginationMixin
 import cloudinary.uploader
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import os
 
 
 class HomeView(TemplateView):
@@ -797,21 +796,8 @@ class RatingViewSet(viewsets.ModelViewSet):
 @csrf_exempt
 def ckeditor_upload(request):
     if request.method == "POST" and request.FILES.get("upload"):
-        upload_file = request.FILES["upload"]
-        name, ext = os.path.splitext(upload_file.name)
-
-        # force .jpg if missing
-        if not ext:
-            upload_file.name += ".jpg"
-
-        # reject invalid types
-        if ext.lower() not in [".jpg", ".jpeg", ".png", ".webp"]:
-            return JsonResponse({"error": "Invalid image format"}, status=400)
-
         result = cloudinary.uploader.upload(
-            upload_file, folder="articles", resource_type="image"
+            request.FILES["upload"], folder="articles"
         )
-
         return JsonResponse({"url": result["secure_url"]})
-
     return JsonResponse({"error": "Invalid request"}, status=400)

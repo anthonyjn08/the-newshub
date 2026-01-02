@@ -21,25 +21,7 @@ class ArticleForm(forms.ModelForm):
             ),
         }
         widgets = {
-            "content": CKEditor5Widget(
-                config={
-                    "toolbar": [
-                        "heading",
-                        "|",
-                        "bold",
-                        "italic",
-                        "imageUpload",
-                        "undo",
-                        "redo",
-                    ],
-                    "ckfinder": {"uploadUrl": "/ckeditor_upload/"},
-                    "image": {
-                        "toolbar": ["imageTextAlternative", "imageStyle:full"]
-                    },
-                    "height": 600,
-                    "width": "100%",
-                }
-            )
+            "content": CKEditor5Widget(config="default"),
         }
 
     def __init__(self, *args, **kwargs):
