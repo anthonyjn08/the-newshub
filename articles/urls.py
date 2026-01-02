@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 from .views import (
     ArticleViewSet,
@@ -14,6 +14,7 @@ from .views import (
     RatingViewSet,
     JournalistDashboardView,
     CommentViewSet,
+    ckeditor_upload,
 )
 
 router = DefaultRouter()
@@ -51,7 +52,7 @@ urlpatterns = [
     path(
         "<int:pk>/reject/", RejectArticleView.as_view(), name="article_reject"
     ),
-    path("ckeditor5/", include("django_ckeditor_5.urls")),
+    path("ckeditor_upload/", ckeditor_upload, name="ckeditor_upload"),
 ]
 
 urlpatterns += router.urls
