@@ -270,12 +270,10 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 CKEDITOR_5_STORAGE_BACKEND = (
     "cloudinary_storage.storage.MediaCloudinaryStorage"
 )
-CKEDITOR_UPLOAD_PATH = "articles/"
+CKEDITOR_5_UPLOAD_PATH = "articles/images/"
 CKEDITOR_5_FILE_UPLOAD_PERMISSION = "authenticated"
 CKEDITOR_5_ALLOW_FILE_UPLOADS = True
-CKEDITOR_5_UPLOAD_FILE_VIEW_NAME = "ckeditor_upload_file"
-
-CLOUDINARY_URL = os.getenv("CLOUDINARY_URL")
+CKEDITOR_5_ALLOW_NONIMAGE_FILES = False
 
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
