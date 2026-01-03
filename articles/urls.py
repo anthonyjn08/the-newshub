@@ -14,7 +14,6 @@ from .views import (
     RatingViewSet,
     JournalistDashboardView,
     CommentViewSet,
-    check_cloudinary,
 )
 
 router = DefaultRouter()
@@ -24,7 +23,6 @@ router.register("ratings", RatingViewSet, basename="rating")
 
 urlpatterns = [
     # Web views for readers
-    path("check-cloudinary/", check_cloudinary),
     path("create/", ArticleCreateView.as_view(), name="article_create"),
     path("", ArticleListView.as_view(), name="article_list"),
     path("<slug:slug>/", ArticleDetailView.as_view(), name="article_detail"),
