@@ -21,20 +21,23 @@ from rest_framework.routers import DefaultRouter
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_simplejwt.views import (
-    TokenObtainPairView, TokenRefreshView)
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 from articles.urls import router as articles_router
 from articles.views import (
-    HomeView, ArticleViewSet,
-    CommentViewSet, RatingViewSet
-    )
+    HomeView,
+    ArticleViewSet,
+    CommentViewSet,
+    RatingViewSet,
+)
 from publications.views import PublicationViewSet
 
 router = DefaultRouter()
 router.register(r"articles", ArticleViewSet, basename="article")
 router.register(r"comments", CommentViewSet, basename="comment")
 router.register(r"ratings", RatingViewSet, basename="rating")
-router.register(r"publications", PublicationViewSet,
-                basename="publication")
+router.register(r"publications", PublicationViewSet, basename="publication")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -43,16 +46,21 @@ urlpatterns = [
     path("articles/", include("articles.urls")),
     path("publications/", include("publications.urls")),
     path("subscriptions/", include("subscriptions.urls")),
-
     # DRF API endpoints
     path("api/", include(router.urls)),
-    path("api/auth/token/", TokenObtainPairView.as_view(),
-         name="token_obtain_pair"
-         ),
-    path("api/auth/token/refresh/", TokenRefreshView.as_view(),
-         name="token_refresh"
-         ),
+    path(
+        "api/auth/token/",
+        TokenObtainPairView.as_view(),
+        name="token_obtain_pair",
+    ),
+    path(
+        "api/auth/token/refresh/",
+        TokenRefreshView.as_view(),
+        name="token_refresh",
+    ),
     path("api/", include(articles_router.urls)),
     # CKEditor
     path("ckeditor5/", include("django_ckeditor_5.urls")),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

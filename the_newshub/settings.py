@@ -213,8 +213,9 @@ CLOUDINARY_STORAGE = {
 
 CKEDITOR_5_STORAGE_BACKEND = "cloudinary_storage.storage.RawCloudinaryStorage"
 CKEDITOR_5_UPLOAD_PATH = "articles/images/"
-CKEDITOR_5_FILE_UPLOAD_PERMISSION = "authenticated"
+CKEDITOR_5_ALLOW_FILE_UPLOADS = True
 CKEDITOR_5_ALLOW_NONIMAGE_FILES = False
+CKEDITOR_5_FILE_UPLOAD_PERMISSION = "authenticated"
 
 
 CKEDITOR_5_CONFIGS = {
@@ -283,3 +284,6 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 mimetypes.add_type("image/jpeg", ".jpg", strict=True)
 mimetypes.add_type("image/png", ".png", strict=True)
 mimetypes.add_type("image/webp", ".webp", strict=True)
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
