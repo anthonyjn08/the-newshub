@@ -207,11 +207,13 @@ SIMPLE_JWT = {
 
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
-CLOUDINARY_STORAGE = {
-    "RESOURCE_TYPE": "image",
-}
+# CLOUDINARY_STORAGE = {
+#     "RESOURCE_TYPE": "image",
+# }
 
-CKEDITOR_5_STORAGE_BACKEND = "cloudinary_storage.storage.RawCloudinaryStorage"
+CKEDITOR_5_STORAGE_BACKEND = (
+    "cloudinary_storage.storage.MediaCloudinaryStorage"
+)
 CKEDITOR_5_UPLOAD_PATH = "articles/images/"
 CKEDITOR_5_ALLOW_FILE_UPLOADS = True
 CKEDITOR_5_ALLOW_NONIMAGE_FILES = False
