@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     "django_ckeditor_5",
     "cloudinary",
-    "cloudinary_storage",
     # Newshub Apps
     "users",
     "publications",
