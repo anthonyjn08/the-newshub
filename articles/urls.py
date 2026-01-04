@@ -14,7 +14,7 @@ from .views import (
     RatingViewSet,
     JournalistDashboardView,
     CommentViewSet,
-    ckeditor_upload,
+    ck_editor_5_upload_file,
 )
 
 router = DefaultRouter()
@@ -26,7 +26,11 @@ urlpatterns = [
     # Web views for readers
     path("create/", ArticleCreateView.as_view(), name="article_create"),
     path("", ArticleListView.as_view(), name="article_list"),
-    path("ckeditor_upload/", ckeditor_upload, name="ckeditor_upload"),
+    path(
+        "ckeditor5/upload/",
+        ck_editor_5_upload_file,
+        name="ck_editor_5_upload_file",
+    ),
     path("<slug:slug>/", ArticleDetailView.as_view(), name="article_detail"),
     # Journalist views
     path("<int:pk>/edit/", ArticleUpdateView.as_view(), name="article_edit"),

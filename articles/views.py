@@ -794,10 +794,9 @@ class RatingViewSet(viewsets.ModelViewSet):
 
 
 @csrf_exempt
-def ckeditor_upload(request):
+def ck_editor_5_upload_file(request):
     if request.method == "POST" and request.FILES.get("upload"):
-        result = cloudinary.uploader.upload(
-            request.FILES["upload"], folder="articles/images"
-        )
+        result = cloudinary.uploader.upload(request.FILES["upload"])
         return JsonResponse({"url": result["secure_url"]})
+
     return JsonResponse({"error": "Invalid request"}, status=400)
