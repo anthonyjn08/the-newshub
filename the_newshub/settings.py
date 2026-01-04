@@ -205,19 +205,25 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
-DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+# DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 # CLOUDINARY_STORAGE = {
 #     "RESOURCE_TYPE": "image",
 # }
 
-CKEDITOR_5_STORAGE_BACKEND = (
-    "cloudinary_storage.storage.MediaCloudinaryStorage"
+cloudinary.config(
+    cloud_name=os.environ["CLOUDINARY_CLOUD_NAME"],
+    api_key=os.environ["CLOUDINARY_API_KEY"],
+    api_secret=os.environ["CLOUDINARY_API_SECRET"],
 )
-CKEDITOR_5_UPLOAD_PATH = "articles/images/"
-CKEDITOR_5_ALLOW_FILE_UPLOADS = True
-CKEDITOR_5_ALLOW_NONIMAGE_FILES = False
-CKEDITOR_5_FILE_UPLOAD_PERMISSION = "authenticated"
+
+# CKEDITOR_5_STORAGE_BACKEND = (
+#     "cloudinary_storage.storage.MediaCloudinaryStorage"
+# )
+# CKEDITOR_5_UPLOAD_PATH = "articles/images/"
+# CKEDITOR_5_ALLOW_FILE_UPLOADS = True
+# CKEDITOR_5_ALLOW_NONIMAGE_FILES = False
+# CKEDITOR_5_FILE_UPLOAD_PERMISSION = "authenticated"
 
 
 CKEDITOR_5_CONFIGS = {
@@ -276,6 +282,7 @@ CKEDITOR_5_CONFIGS = {
         },
         "height": 600,
         "width": "100%",
+        "ckfinder": {"uploadUrl": "/articles/ckeditor_upload/"},
     }
 }
 
